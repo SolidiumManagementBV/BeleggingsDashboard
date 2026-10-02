@@ -181,7 +181,9 @@
         async function loadPortfolioData() {
             try {
                 // VERVANG ONDERSTAANDE URL MET JOUW GEKOPIEERDE GOOGLE APPS SCRIPT WEB-APP URL
-                const scriptURL = 'https://script.google.com/macros/s/AKfycbyFdVSDjvOncLL6Zm0EFgD9zxp96sPONeD-ZTawbb1gfRxVkpNKnz1PyyrJCMIkenUX/exec';
+                const scriptURL = 'https://script.google.com/macros/s/AKfycbz4jfAQXD_HcGIXQLVjKUasj0Zn5GMyxCc8z5GjBvjTQmhz27X4DdfhvG62BEU6f3IV/exec';
+
+                
                 
                 const response = await fetch(scriptURL);
                 if (!response.ok) throw new Error('Netwerkfout bij ophalen Google Sheet data');
