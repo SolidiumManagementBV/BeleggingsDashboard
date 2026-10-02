@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solidium Management BV | Beleggingsdashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                            accent: '#3b82f6',
+                            success: '#10b981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 text-white font-bold p-2 rounded-lg text-sm tracking-wider">SM</div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Solidium Management BV</h1>
+                    <p class="text-xs text-slate-400">Master Portefeuille Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 text-sm">
+                <span class="hidden sm:inline-block text-slate-400">Laatste sync: <span id="current-date" class="text-slate-200 font-medium">--</span></span>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-pulse" id="status-dot"></span> <span id="data-status">Laden...</span>
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- KPI Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Totaal Vermogen</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-total">€ --</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Kernportefeuille</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-core">€ --</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Thematisch & ETF's</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-thematic">€ --</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Kids Portefeuille</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-kids">€ --</p>
+            </div>
+        </div>
+
+        <!-- Tab Navigatie -->
+        <div class="border-b border-brand-border flex space-x-6 text-sm font-medium overflow-x-auto">
+            <button onclick="switchTab('core')" id="btn-core" class="pb-3 border-b-2 border-blue-500 text-blue-400 focus:outline-none whitespace-nowrap transition">Kernportefeuille (Aandelen)</button>
+            <button onclick="switchTab('thematic')" id="btn-thematic" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 focus:outline-none whitespace-nowrap transition">Thematisch & ETF's</button>
+            <button onclick="switchTab('kids')" id="btn-kids" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 focus:outline-none whitespace-nowrap transition">Kids Portefeuille</button>
+        </div>
+
+        <!-- TAB 1: KERNPORTEFEUILLE -->
+        <div id="tab-core" class="space-y-6">
+            <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-brand-border">
+                    <h2 class="font-semibold text-base text-slate-200">Kernportefeuille: Aandelen & Holdings</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Lage schuld, sterke balans, hoge kasstroom & pricing power</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-900/60 text-slate-400 uppercase text-xs tracking-wider border-b border-brand-border">
+                                <th class="py-3 px-6">Bedrijf</th>
+                                <th class="py-3 px-6">Subsector</th>
+                                <th class="py-3 px-6 text-right">Aandelen</th>
+                                <th class="py-3 px-6 text-right">Koers</th>
+                                <th class="py-3 px-6 text-right">Totale Waarde (€)</th>
+                                <th class="py-3 px-6 text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-slate-300" id="core-table-body">
+                            <tr><td colspan="6" class="py-6 text-center text-slate-500">Live data ophalen...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: THEMATISCH & ETF'S -->
+        <div id="tab-thematic" class="hidden space-y-6">
+            <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-brand-border">
+                    <h2 class="font-semibold text-base text-slate-200">Thematische Fondsen & Grondstoffen ETF's</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Overzicht van thematische allocaties (Klimaat, DRAM, AI, Uranium, etc.)</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-900/60 text-slate-400 uppercase text-xs tracking-wider border-b border-brand-border">
+                                <th class="py-3 px-6">Fonds / ETF</th>
+                                <th class="py-3 px-6">Thema</th>
+                                <th class="py-3 px-6 text-right">Aandelen / Stuks</th>
+                                <th class="py-3 px-6 text-right">Koers</th>
+                                <th class="py-3 px-6 text-right">Totale Waarde (€)</th>
+                                <th class="py-3 px-6 text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-slate-300" id="thematic-table-body">
+                            <tr><td colspan="6" class="py-6 text-center text-slate-500">Live data ophalen...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: KIDS PORTEFEUILLE -->
+        <div id="tab-kids" class="hidden space-y-6">
+            <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-sm">
+                <div class="px-6 py-4 border-b border-brand-border">
+                    <h2 class="font-semibold text-base text-slate-200">Kids Langetermijnportefeuille</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Geoormerkte posities ("houden voor kids")</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-slate-900/60 text-slate-400 uppercase text-xs tracking-wider border-b border-brand-border">
+                                <th class="py-3 px-6">Positie</th>
+                                <th class="py-3 px-6">Categorie</th>
+                                <th class="py-3 px-6 text-right">Aandelen</th>
+                                <th class="py-3 px-6 text-right">Koers</th>
+                                <th class="py-3 px-6 text-right">Totale Waarde (€)</th>
+                                <th class="py-3 px-6 text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-slate-300" id="kids-table-body">
+                            <tr><td colspan="6" class="py-6 text-center text-slate-500">Live data ophalen...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-card border-t border-brand-border mt-auto py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Solidium Management BV. Alle rechten voorbehouden.</p>
+    </footer>
+
+    <!-- JavaScript Logica -->
+    <script>
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('nl-NL', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        function switchTab(tabId) {
+            ['core', 'thematic', 'kids'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`btn-${t}`).classList.remove('border-blue-500', 'text-blue-400');
+                document.getElementById(`btn-${t}`).classList.add('border-transparent', 'text-slate-400');
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            document.getElementById(`btn-${tabId}`).classList.add('border-blue-500', 'text-blue-400');
+            document.getElementById(`btn-${tabId}`).classList.remove('border-transparent', 'text-slate-400');
+        }
+
+        async function loadPortfolioData() {
+            try {
+                // VERVANG ONDERSTAANDE URL MET JOUW GEKOPIEERDE GOOGLE APPS SCRIPT WEB-APP URL
+                const scriptURL = 'JOUW_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HIER';
+                
+                const response = await fetch(scriptURL);
+                if (!response.ok) throw new Error('Netwerkfout bij ophalen Google Sheet data');
+                
+                const data = await response.json();
+                
+                document.getElementById('data-status').innerText = 'Live gesynchroniseerd';
+
+                // Automatisch filteren op basis van categorie kolom in je Google Sheet
+                const getCat = (item) => {
+                    const val = item.categorie || item.portefeuille || item.type || '';
+                    return val.toString().toLowerCase();
+                };
+
+                const coreItems = data.filter(item => {
+                    const c = getCat(item);
+                    return c.includes('kern') || c.includes('aandelen') || c.includes('holding') || (!c.includes('thema') && !c.includes('kid') && !c.includes('etf'));
+                });
+
+                const thematicItems = data.filter(item => {
+                    const c = getCat(item);
+                    return c.includes('thema') || c.includes('etf') || c.includes('fonds');
+                });
+
+                const kidsItems = data.filter(item => {
+                    const c = getCat(item);
+                    return c.includes('kid');
+                });
+
+                populateTable('core-table-body', coreItems);
+                populateTable('thematic-table-body', thematicItems);
+                populateTable('kids-table-body', kidsItems);
+
+                updateKPIs(coreItems, thematicItems, kidsItems);
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('data-status').innerText = 'Fout bij laden data';
+                document.getElementById('status-dot').classList.remove('bg-emerald-400');
+                document.getElementById('status-dot').classList.add('bg-rose-400');
+            }
+        }
+
+        function populateTable(tbodyId, items) {
+            const tbody = document.getElementById(tbodyId);
+            if (!items || items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">Geen posities gevonden</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => {
+                const naam = item.bedrijf || item.positie || item.naam || '-';
+                const subsector = item.subsector || item.categorie || '-';
+                const aandelen = formatNumber(item.aandelen || item.stuks || 0, 2);
+                const koers = formatCurrency(item.koers || 0);
+                const waarde = formatCurrency(item.waarde || item.totaalwaarde || 0);
+                const rendementVal = parseFloat(item.rendement || item.return || 0);
+                const rendementStr = (rendementVal >= 0 ? '+' : '') + rendementVal.toFixed(2) + '%';
+                const rendementClass = rendementVal >= 0 ? 'text-emerald-400' : 'text-rose-400';
+
+                return `
+                    <tr class="hover:bg-slate-800/40 transition">
+                        <td class="py-3 px-6 font-medium text-white">${naam}</td>
+                        <td class="py-3 px-6 text-slate-400">${subsector}</td>
+                        <td class="py-3 px-6 text-right">${aandelen}</td>
+                        <td class="py-3 px-6 text-right">${koers}</td>
+                        <td class="py-3 px-6 text-right font-medium text-white">${waarde}</td>
+                        <td class="py-3 px-6 text-right ${rendementClass}">${rendementStr}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateKPIs(core, thematic, kids) {
+            const calcTotal = (arr) => arr.reduce((sum, item) => sum + parseFloat(item.waarde || item.totaalwaarde || 0), 0);
+            
+            const coreTotal = calcTotal(core);
+            const thematicTotal = calcTotal(thematic);
+            const kidsTotal = calcTotal(kids);
+            const grandTotal = coreTotal + thematicTotal + kidsTotal;
+
+            document.getElementById('kpi-total').innerText = formatCurrency(grandTotal);
+            document.getElementById('kpi-core').innerText = formatCurrency(coreTotal);
+            document.getElementById('kpi-thematic').innerText = formatCurrency(thematicTotal);
+            document.getElementById('kpi-kids').innerText = formatCurrency(kidsTotal);
+        }
+
+        function formatCurrency(val) {
+            const num = parseFloat(val) || 0;
+            return '€ ' + num.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatNumber(val, decimals) {
+            const num = parseFloat(val) || 0;
+            return num.toLocaleString('nl-NL', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        }
+
+        loadPortfolioData();
+    </script>
+</body>
+</html>
