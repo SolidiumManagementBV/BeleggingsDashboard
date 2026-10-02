@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solidium Management BV | Dynamisch Beleggingsdashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            border: '#334155',
+                            accent: '#3b82f6',
+                            success: '#10b981',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header / Navbar -->
+    <header class="bg-brand-card border-b border-brand-border sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-blue-600 text-white font-bold p-2 rounded-lg text-sm tracking-wider">SM</div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Solidium Management BV</h1>
+                    <p class="text-xs text-slate-400">Live Master Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 text-sm">
+                <span class="hidden sm:inline-block text-slate-400">Laatste sync: <span id="current-date" class="text-slate-200 font-medium">--</span></span>
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Netlify Live
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- KPI Summary Cards (Dynamisch ingeladen) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-container">
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Totaal Vermogen</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-total">Laden...</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Kernportefeuille</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-core">Laden...</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Thematisch & ETF's</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-thematic">Laden...</p>
+            </div>
+            <div class="bg-brand-card p-5 rounded-xl border border-brand-border shadow-sm">
+                <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Kids Portefeuille</p>
+                <p class="text-2xl font-bold mt-2 text-slate-100" id="kpi-kids">Laden...</p>
+            </div>
+        </div>
+
+        <!-- Tab Navigatie -->
+        <div class="border-b border-brand-border flex space-x-6 text-sm font-medium overflow-x-auto">
+            <button onclick="switchTab('core')" id="btn-core" class="pb-3 border-b-2 border-blue-500 text-blue-400 focus:outline-none whitespace-nowrap transition">Kernportefeuille</button>
+            <button onclick="switchTab('thematic')" id="btn-thematic" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 focus:outline-none whitespace-nowrap transition">Thematisch & ETF's</button>
+            <button onclick="switchTab('kids')" id="btn-kids" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-200 focus:outline-none whitespace-nowrap transition">Kids Portefeuille</button>
+        </div>
+
+        <!-- Dynamische Tabellen Container -->
+        <div class="bg-brand-card rounded-xl border border-brand-border overflow-hidden shadow-sm">
+            <div class="px-6 py-4 border-b border-brand-border flex justify-between items-center">
+                <h2 class="font-semibold text-base text-slate-200" id="table-title">Portefeuille Overzicht</h2>
+                <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-brand-border" id="data-status">Live Data</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-900/60 text-slate-400 uppercase text-xs tracking-wider border-b border-brand-border">
+                            <th class="py-3 px-6">Bedrijf / Positie</th>
+                            <th class="py-3 px-6">Categorie / Subsector</th>
+                            <th class="py-3 px-6 text-right">Aandelen</th>
+                            <th class="py-3 px-6 text-right">Koers</th>
+                            <th class="py-3 px-6 text-right">Totale Waarde (€)</th>
+                            <th class="py-3 px-6 text-right">Rendement</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 text-slate-300" id="dynamic-table-body">
+                        <!-- Wordt dynamisch gevuld vanuit JavaScript -->
+                        <tr>
+                            <td colspan="6" class="py-8 text-center text-slate-500">Gegevens worden geladen...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-card border-t border-brand-border mt-auto py-6 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Solidium Management BV. Alle rechten voorbehouden.</p>
+    </footer>
+
+    <!-- JavaScript voor dynamische data-injectie -->
+    <script>
+        // Datum tonen
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('nl-NL', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        let portfolioData = { core: [], thematic: [], kids: [] };
+        let activeCategory = 'core';
+
+        // Functie om data op te halen (verwacht een data.json in je repository of een Google Sheets JSON/CSV endpoint)
+        async function fetchPortfolioData() {
+            try {
+                // TIP: Vervang 'data.json' eventueel door je Google Apps Script URL of opgeslagen JSON bestand
+                const response = await fetch('data.json'); 
+                if (!response.ok) throw new Error('Kon databestand niet laden');
+                portfolioData = await response.json();
+                
+                updateKPIs();
+                renderTable(activeCategory);
+            } catch (error) {
+                console.warn('Geen extern data.json gevonden, laad fallback of meld status:', error);
+                document.getElementById('dynamic-table-body').innerHTML = `
+                    <tr><td colspan="6" class="py-8 text-center text-amber-400 text-xs">
+                        Geen live data.json gevonden in de repository.<br>Plaats een <code class="bg-slate-900 px-1 py-0.5 rounded">data.json</code> bestand in je GitHub repository met je posities om ze hier live in te laden.
+                    </td></tr>`;
+            }
+        }
+
+        function updateKPIs() {
+            // Bereken totalen op basis van de ingeladen data
+            const calcTotal = (arr) => arr.reduce((sum, item) => sum + (item.waarde || 0), 0);
+            
+            const coreTotal = calcTotal(portfolioData.core);
+            const thematicTotal = calcTotal(portfolioData.thematic);
+            const kidsTotal = calcTotal(portfolioData.kids);
+            const grandTotal = coreTotal + thematicTotal + kidsTotal;
+
+            document.getElementById('kpi-total').innerText = '€ ' + grandTotal.toLocaleString('nl-NL', {minimumFractionDigits: 2});
+            document.getElementById('kpi-core').innerText = '€ ' + coreTotal.toLocaleString('nl-NL', {minimumFractionDigits: 2});
+            document.getElementById('kpi-thematic').innerText = '€ ' + thematicTotal.toLocaleString('nl-NL', {minimumFractionDigits: 2});
+            document.getElementById('kpi-kids').innerText = '€ ' + kidsTotal.toLocaleString('nl-NL', {minimumFractionDigits: 2});
+        }
+
+        function switchTab(category) {
+            activeCategory = category;
+            ['core', 'thematic', 'kids'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if (t === category) {
+                    btn.classList.add('border-blue-500', 'text-blue-400');
+                    btn.classList.remove('border-transparent', 'text-slate-400');
+                } else {
+                    btn.classList.remove('border-blue-500', 'text-blue-400');
+                    btn.classList.add('border-transparent', 'text-slate-400');
+                }
+            });
+            renderTable(category);
+        }
+
+        function renderTable(category) {
+            const tbody = document.getElementById('dynamic-table-body');
+            const items = portfolioData[category] || [];
+            
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Geen posities gevonden in categorie: ${category}</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => `
+                <tr class="hover:bg-slate-800/40 transition">
+                    <td class="py-3 px-6 font-medium text-white">${item.naam}</td>
+                    <td class="py-3 px-6 text-slate-400">${item.subsector}</td>
+                    <td class="py-3 px-6 text-right">${item.aandelen}</td>
+                    <td class="py-3 px-6 text-right">${item.koers}</td>
+                    <td class="py-3 px-6 text-right font-medium text-white">€ ${item.waarde.toLocaleString('nl-NL', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-6 text-right ${item.rendement >= 0 ? 'text-emerald-400' : 'text-rose-400'}">${item.rendement}%</td>
+                </tr>
+            `).join('');
+        }
+
+        // Init bij laden van de pagina
+        fetchPortfolioData();
+    </script>
+</body>
+</html>
