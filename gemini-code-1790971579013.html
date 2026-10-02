@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="nl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solidium Management BV - Beleggingsdashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Chart.js voor visualisaties -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome voor iconen -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 p-2 rounded-lg text-white font-bold text-xl shadow-lg">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">Solidium Management BV</h1>
+                    <p class="text-xs text-slate-400">Master Portefeuille Dashboard</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span class="text-xs bg-brand-900/50 text-brand-300 border border-brand-700/50 px-3 py-1 rounded-full font-medium">
+                    <i class="fa-solid fa-circle text-[8px] text-brand-500 mr-1.5 animate-pulse"></i> Live Koppeling Actief
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigatie Tabbladen -->
+    <nav class="bg-slate-900/60 border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-brand-500 text-brand-400 whitespace-nowrap transition-colors">
+                <i class="fa-solid fa-house-chimney mr-2"></i> Dashboard Overzicht
+            </button>
+            <button onclick="switchTab('david')" id="btn-david" class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-colors">
+                <i class="fa-solid fa-user mr-2"></i> David
+            </button>
+            <button onclick="switchTab('family')" id="btn-family" class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-colors">
+                <i class="fa-solid fa-users mr-2"></i> Family
+            </button>
+            <button onclick="switchTab('kids')" id="btn-kids" class="tab-btn py-4 px-1 border-b-2 font-medium text-sm border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition-colors">
+                <i class="fa-solid fa-child mr-2"></i> Kids
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hoofdinhoud -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB: DASHBOARD OVERZICHT -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+            <!-- KPI Kaarten -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Totale Portefeuillewaarde</p>
+                    <p class="text-2xl font-bold text-white mt-2">€ 1.245.850</p>
+                    <span class="text-xs text-brand-400 font-medium mt-1 inline-block"><i class="fa-solid fa-arrow-trend-up mr-1"></i> +2.4% deze maand</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">David Portefeuille</p>
+                    <p class="text-2xl font-bold text-white mt-2">€ 520.300</p>
+                    <span class="text-xs text-slate-400 font-medium mt-1 inline-block">41.8% van totaal</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Family Portefeuille</p>
+                    <p class="text-2xl font-bold text-white mt-2">€ 485.550</p>
+                    <span class="text-xs text-slate-400 font-medium mt-1 inline-block">38.9% van totaal</span>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-sm">
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Kids Portefeuille</p>
+                    <p class="text-2xl font-bold text-white mt-2">€ 240.000</p>
+                    <span class="text-xs text-slate-400 font-medium mt-1 inline-block">19.3% van totaal</span>
+                </div>
+            </div>
+
+            <!-- Grafieken Sectie -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl lg:col-span-1 flex flex-col justify-between">
+                    <h3 class="text-base font-semibold text-white mb-4">Vermogensverdeling</h3>
+                    <div class="relative h-64 flex items-center justify-center">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl lg:col-span-2 flex flex-col justify-between">
+                    <h3 class="text-base font-semibold text-white mb-4">Portefeuille Groei & Ontwikkeling</h3>
+                    <div class="relative h-64 flex items-center justify-center">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: DAVID -->
+        <section id="tab-david" class="tab-content hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-white">David Portefeuille Details</h2>
+                <span class="text-sm text-slate-400">Focus: Kwaliteitsaandelen & Technologie</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-slate-800/60 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-4 font-semibold">Ticker / Naam</th>
+                                <th class="p-4 font-semibold">ISIN</th>
+                                <th class="p-4 font-semibold text-right">Aantal</th>
+                                <th class="p-4 font-semibold text-right">Koers (€)</th>
+                                <th class="p-4 font-semibold text-right">Waarde (€)</th>
+                                <th class="p-4 font-semibold text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td class="p-4 font-medium text-white">ASML Holding</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">NL0010273215</td>
+                                <td class="p-4 text-right">120</td>
+                                <td class="p-4 text-right">€ 850.00</td>
+                                <td class="p-4 text-right font-semibold">€ 102.000</td>
+                                <td class="p-4 text-right text-brand-400">+18.5%</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-medium text-white">NVIDIA Corp</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">US67066G1040</td>
+                                <td class="p-4 text-right">450</td>
+                                <td class="p-4 text-right">€ 120.50</td>
+                                <td class="p-4 text-right font-semibold">€ 54.225</td>
+                                <td class="p-4 text-right text-brand-400">+42.1%</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-medium text-white">Novo Nordisk</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">DK0060534915</td>
+                                <td class="p-4 text-right">300</td>
+                                <td class="p-4 text-right">€ 95.20</td>
+                                <td class="p-4 text-right font-semibold">€ 28.560</td>
+                                <td class="p-4 text-right text-brand-400">+8.3%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: FAMILY -->
+        <section id="tab-family" class="tab-content hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-white">Family Portefeuille Details</h2>
+                <span class="text-sm text-slate-400">Focus: Industrials, Luxury & Holdings</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-slate-800/60 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-4 font-semibold">Ticker / Naam</th>
+                                <th class="p-4 font-semibold">ISIN</th>
+                                <th class="p-4 font-semibold text-right">Aantal</th>
+                                <th class="p-4 font-semibold text-right">Koers (€)</th>
+                                <th class="p-4 font-semibold text-right">Waarde (€)</th>
+                                <th class="p-4 font-semibold text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td class="p-4 font-medium text-white">LVMH</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">FR0000121014</td>
+                                <td class="p-4 text-right">150</td>
+                                <td class="p-4 text-right">€ 680.00</td>
+                                <td class="p-4 text-right font-semibold">€ 102.000</td>
+                                <td class="p-4 text-right text-brand-400">+12.4%</td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 font-medium text-white">Ackermans & van Haaren</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">BE0003764785</td>
+                                <td class="p-4 text-right">500</td>
+                                <td class="p-4 text-right">€ 175.00</td>
+                                <td class="p-4 text-right font-semibold">€ 87.500</td>
+                                <td class="p-4 text-right text-brand-400">+6.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: KIDS -->
+        <section id="tab-kids" class="tab-content hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-xl font-bold text-white">Kids Portefeuille Details</h2>
+                <span class="text-sm text-slate-400">Focus: Lange termijn groei & ETF's</span>
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="bg-slate-800/60 text-slate-400 text-xs uppercase tracking-wider border-b border-slate-800">
+                            <tr>
+                                <th class="p-4 font-semibold">Ticker / Naam</th>
+                                <th class="p-4 font-semibold">ISIN</th>
+                                <th class="p-4 font-semibold text-right">Aantal</th>
+                                <th class="p-4 font-semibold text-right">Koers (€)</th>
+                                <th class="p-4 font-semibold text-right">Waarde (€)</th>
+                                <th class="p-4 font-semibold text-right">Rendement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-slate-300">
+                            <tr>
+                                <td class="p-4 font-medium text-white">Nordea 1 - Global Climate and Environment Fund</td>
+                                <td class="p-4 text-slate-500 font-mono text-xs">LU0348926287</td>
+                                <td class="p-4 text-right">1.200</td>
+                                <td class="p-4 text-right">€ 45.50</td>
+                                <td class="p-4 text-right font-semibold">€ 54.600</td>
+                                <td class="p-4 text-right text-brand-400">+15.2%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 mt-12 text-center text-xs text-slate-500">
+        <p>&copy; 2026 Solidium Management BV. Alle rechten voorbehouden.</p>
+    </footer>
+
+    <!-- JavaScript voor tabbladen en grafieken -->
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-brand-500', 'text-brand-400');
+                el.classList.add('border-transparent', 'text-slate-400');
+            });
+            
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('border-transparent', 'text-slate-400');
+            activeBtn.classList.add('border-brand-500', 'text-brand-400');
+        }
+
+        // Grafiek initialisatie
+        window.addEventListener('DOMContentLoaded', () => {
+            // Asset Allocation Doughnut Chart
+            const ctxAllocation = document.getElementById('allocationChart').getContext('2d');
+            new Chart(ctxAllocation, {
+                type: 'doughnut',
+                data: {
+                    labels: ['David', 'Family', 'Kids'],
+                    datasets: [{
+                        data: [520300, 485550, 240000],
+                        backgroundColor: ['#16a34a', '#3b82f6', '#f59e0b'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#94a3b8', font: { size: 12 } }
+                        }
+                    }
+                }
+            });
+
+            // Growth Line Chart
+            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            new Chart(ctxGrowth, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt'],
+                    datasets: [{
+                        label: 'Totale Portefeuille Waarde (€)',
+                        data: [1100000, 1120000, 1150000, 1140000, 1180000, 1210000, 1200000, 1230000, 1240000, 1245850],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+                        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
